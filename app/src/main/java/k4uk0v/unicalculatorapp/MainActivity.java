@@ -17,6 +17,56 @@ public class MainActivity extends AppCompatActivity {
     private static final String STATE_PENDING_OPERATION = "PendingOperation";
     private static final String STATE_OPERAND = "Operand";
 
+    View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Button b = (Button) v;
+
+            newInput.append(b.getText().toString());
+        }
+    };
+
+    View.OnClickListener operationListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Button b = (Button) v;
+
+            String operator = b.getText().toString();
+            String value = newInput.getText().toString();
+
+            try {
+                Double val = Double.valueOf(value);
+                performOperation(val, operator);
+            } catch (NumberFormatException e) {
+                newInput.setText("");
+            }
+
+            pendingOperation = operator;
+            selectedOperator.setText(pendingOperation);
+        }
+    };
+
+    View.OnClickListener negativeListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String value = newInput.getText().toString();
+
+            if (value.length() == 0) {
+                newInput.setText("-");
+            } else {
+                try {
+                    Double doubleValue = Double.valueOf(value);
+
+                    doubleValue *= -1;
+
+                    newInput.setText(doubleValue.toString());
+                } catch (NumberFormatException e) {
+                    newInput.setText("");
+                }
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         selectedOperator.setText("");
 
+        // Calculator number buttons (0-9)
         Button button0 = findViewById(R.id.button0);
         Button button1 = findViewById(R.id.button1);
         Button button2 = findViewById(R.id.button2);
@@ -39,82 +90,38 @@ public class MainActivity extends AppCompatActivity {
         Button button8 = findViewById(R.id.button8);
         Button button9 = findViewById(R.id.button9);
 
+        // Calculator decimal point button
         Button buttonDecimalPoint = findViewById(R.id.buttonDecimalPoint);
+
+        // Calculator operation buttons (+, -, *, /)
         Button buttonEquals = findViewById(R.id.buttonEquals);
         Button buttonAddition = findViewById(R.id.buttonAddition);
         Button buttonSubtraction = findViewById(R.id.buttonSubtraction);
         Button buttonMultiplication = findViewById(R.id.buttonMultiplication);
         Button buttonDivision = findViewById(R.id.buttonDivision);
 
+        // Calculator negative/positive conversion button
         Button buttonNegative = findViewById(R.id.buttonNegative);
 
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Button b = (Button) v;
-
-                newInput.append(b.getText().toString());
-            }
+        Button[] numberButtons = new Button[]{
+                button0, button1, button2, button3, button4,
+                button5, button6, button7, button8, button9
         };
 
-        View.OnClickListener operationListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Button b = (Button) v;
-
-                String operator = b.getText().toString();
-                String value = newInput.getText().toString();
-
-                try {
-                    Double val = Double.valueOf(value);
-                    performOperation(val, operator);
-                } catch (NumberFormatException e) {
-                    newInput.setText("");
-                }
-
-                pendingOperation = operator;
-                selectedOperator.setText(pendingOperation);
-            }
+        Button[] operationButtons = new Button[]{
+                buttonEquals, buttonAddition, buttonSubtraction,
+                buttonMultiplication, buttonDivision
         };
 
-        View.OnClickListener negativeListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String value = newInput.getText().toString();
+        for (Button button : numberButtons) {
+            button.setOnClickListener(listener);
+        }
 
-                if (value.length() == 0) {
-                    newInput.setText("-");
-                } else {
-                    try {
-                        Double doubleValue = Double.valueOf(value);
+        for (Button button : operationButtons) {
+            button.setOnClickListener(operationListener);
+        }
 
-                        doubleValue *= -1;
-
-                        newInput.setText(doubleValue.toString());
-                    } catch (NumberFormatException e) {
-                        newInput.setText("");
-                    }
-                }
-            }
-        };
-
-        button0.setOnClickListener(listener);
-        button1.setOnClickListener(listener);
-        button2.setOnClickListener(listener);
-        button3.setOnClickListener(listener);
-        button4.setOnClickListener(listener);
-        button5.setOnClickListener(listener);
-        button6.setOnClickListener(listener);
-        button7.setOnClickListener(listener);
-        button8.setOnClickListener(listener);
-        button9.setOnClickListener(listener);
         buttonDecimalPoint.setOnClickListener(listener);
-
-        buttonEquals.setOnClickListener(operationListener);
-        buttonAddition.setOnClickListener(operationListener);
-        buttonSubtraction.setOnClickListener(operationListener);
-        buttonMultiplication.setOnClickListener(operationListener);
-        buttonDivision.setOnClickListener(operationListener);
 
         buttonNegative.setOnClickListener(negativeListener);
     }
