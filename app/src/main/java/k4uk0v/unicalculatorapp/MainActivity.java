@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         Button buttonMultiplication = findViewById(R.id.buttonMultiplication);
         Button buttonDivision = findViewById(R.id.buttonDivision);
 
+        Button buttonNegative = findViewById(R.id.buttonNegative);
+
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,6 +77,27 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        View.OnClickListener negativeListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = newInput.getText().toString();
+
+                if (value.length() == 0) {
+                    newInput.setText("-");
+                } else {
+                    try {
+                        Double doubleValue = Double.valueOf(value);
+
+                        doubleValue *= -1;
+
+                        newInput.setText(doubleValue.toString());
+                    } catch (NumberFormatException e) {
+                        newInput.setText("");
+                    }
+                }
+            }
+        };
+
         button0.setOnClickListener(listener);
         button1.setOnClickListener(listener);
         button2.setOnClickListener(listener);
@@ -92,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         buttonSubtraction.setOnClickListener(operationListener);
         buttonMultiplication.setOnClickListener(operationListener);
         buttonDivision.setOnClickListener(operationListener);
+
+        buttonNegative.setOnClickListener(negativeListener);
     }
 
     private void performOperation(Double value, String operation) {
